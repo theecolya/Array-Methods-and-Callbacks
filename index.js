@@ -45,9 +45,11 @@ hint - you should be looking at the stage key inside of the objects
 */
 
 function getFinals(array) {
-    const result = array.filter((match) => { return match.Stage === 'Final'});
-   return result;
- }
+    const allFinals = array.filter(function(item){
+   return item.Stage === 'Final';
+ })
+ return allFinals;
+}
  console.log(getFinals(fifaData))
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 3: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
@@ -57,8 +59,7 @@ Use the higher-order function called getYears to do the following:
 3. Return an array called years containing all of the years in the getFinals data set*/
 
 function getYears(array, getFinalsCb) {
-    const years = getFinalsCb(array); 
-    return years.map((years) => years['Year'])
+   return getFinalsCb(array).map(item => item.Year)
 }
 console.log(getYears(fifaData,getFinals))
 
@@ -69,8 +70,8 @@ Use the higher-order function getWinners to do the following:
 3. Determines the winner (home or away) of each `finals` game. 
 4. Returns the names of all winning countries in an array called `winners` */ 
 
-function getWinners(/* code here */) {
-    /* code here */
+function getWinners(data, getFinalsCb) {
+    return getFinalsCb(data).map(item => item['Home Team Goals'] > item['Away Team Goals'] ? item['Home Team Name'] : item['Away Team Name'] )
 }
 
 
@@ -86,8 +87,10 @@ Use the higher-order function getWinnersByYear to do the following:
 hint: the strings returned need to exactly match the string in step 4.
  */
 
-function getWinnersByYear(/* code here */) {
-    /* code here */
+function getWinnersByYear(data, getYearsCb, getWinnersCb) {
+   const winners = getWinnersCb(data, getFinals);
+   const years = getYearsCb(data, getFinals);
+   return winners.map(function (item, index) { `In ${years[index]}, ${item} won the world cup!`; });
 }
 
 
@@ -102,8 +105,11 @@ Use the higher order function getAverageGoals to do the following:
  Example of invocation: getAverageGoals(getFinals(fifaData));
 */
 
-function getAverageGoals(/* code here */) {
-   /* code here */
+function getAverageGoals(data) {
+   const averageHomeGoals = data.reduce(function(acc, item){
+       return acc + item['Home Team Goals'] + item['Away Team Goals'];
+   }, 0)
+   return (averageHomeGoals / data.length).toFixed(2);
 }
 
 
